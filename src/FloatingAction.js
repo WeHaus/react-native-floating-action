@@ -16,7 +16,6 @@ import { isIphoneX } from "./utils/platform";
 import { getRippleProps, getTouchableComponent } from "./utils/touchable";
 
 const DEVICE_WIDTH = Dimensions.get("window").width;
-const ACTION_BUTTON_SIZE = 56;
 
 const DEFAULT_SHADOW_PROPS = {
   shadowOpacity: 0.35,
@@ -40,12 +39,10 @@ class FloatingAction extends Component {
       props.distanceToEdge + props.mainVerticalDistance
     );
     this.actionsBottomAnimation = new Animated.Value(
-      props.actionButtonSize
-        ? props.actionButtonSize
-        : ACTION_BUTTON_SIZE +
-          props.distanceToEdge +
-          props.actionsPaddingTopBottom +
-          props.mainVerticalDistance
+      props.actionButtonSize +
+        props.distanceToEdge +
+        props.actionsPaddingTopBottom +
+        props.mainVerticalDistance
     );
     this.animation = new Animated.Value(0);
     this.actionsAnimation = new Animated.Value(0);
@@ -119,13 +116,12 @@ class FloatingAction extends Component {
     Animated.parallel([
       Animated.spring(this.actionsBottomAnimation, {
         bounciness: 0,
-        toValue: actionButtonSize
-          ? actionButtonSize
-          : ACTION_BUTTON_SIZE +
-            distanceToEdge +
-            actionsPaddingTopBottom +
-            height -
-            (isIphoneX() ? 40 : 0),
+        toValue:
+          actionButtonSize +
+          distanceToEdge +
+          actionsPaddingTopBottom +
+          height -
+          (isIphoneX() ? 40 : 0),
         duration: 250
       }),
       Animated.spring(this.mainBottomAnimation, {
@@ -146,9 +142,7 @@ class FloatingAction extends Component {
     Animated.parallel([
       Animated.spring(this.actionsBottomAnimation, {
         bounciness: 0,
-        toValue: actionButtonSize
-          ? actionButtonSize
-          : ACTION_BUTTON_SIZE + distanceToEdge + actionsPaddingTopBottom,
+        toValue: actionButtonSize + distanceToEdge + actionsPaddingTopBottom,
         duration: 250
       }),
       Animated.spring(this.mainBottomAnimation, {
@@ -326,7 +320,8 @@ class FloatingAction extends Component {
       position,
       overrideWithAction,
       distanceToEdge,
-      animated
+      animated,
+      actionButtonSize
     } = this.props;
     const { active } = this.state;
 
@@ -415,12 +410,8 @@ class FloatingAction extends Component {
           animatedVisibleView,
           this.getShadow(),
           {
-            width: this.props.actionButtonSize
-              ? this.props.actionButtonSize
-              : 56,
-            height: this.props.actionButtonSize
-              ? this.props.actionButtonSize
-              : 56
+            width: actionButtonSize,
+            height: actionButtonSize
           }
         ]}
         accessible
@@ -431,12 +422,8 @@ class FloatingAction extends Component {
           style={[
             styles.button,
             {
-              width: this.props.actionButtonSize
-                ? this.props.actionButtonSize
-                : 56,
-              height: this.props.actionButtonSize
-                ? this.props.actionButtonSize
-                : 56
+              width: actionButtonSize,
+              height: actionButtonSize
             }
           ]}
           activeOpacity={0.85}
@@ -447,12 +434,8 @@ class FloatingAction extends Component {
               styles.buttonTextContainer,
               animatedViewStyle,
               {
-                width: this.props.actionButtonSize
-                  ? this.props.actionButtonSize
-                  : 56,
-                height: this.props.actionButtonSize
-                  ? this.props.actionButtonSize
-                  : 56
+                width: actionButtonSize,
+                height: actionButtonSize
               }
             ]}
           >
@@ -582,6 +565,7 @@ FloatingAction.propTypes = {
   animated: PropTypes.bool,
   color: PropTypes.string,
   distanceToEdge: PropTypes.number,
+  actionButtonSize: PropTypes.number,
   mainVerticalDistance: PropTypes.number,
   visible: PropTypes.bool,
   overlayColor: PropTypes.string,
@@ -622,6 +606,7 @@ FloatingAction.defaultProps = {
   overlayColor: "rgba(68, 68, 68, 0.6)",
   position: "right",
   distanceToEdge: 30,
+  actionButtonSize: 56,
   openOnMount: false,
   showBackground: true,
   iconHeight: 15,
